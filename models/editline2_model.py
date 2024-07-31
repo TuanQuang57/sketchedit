@@ -73,8 +73,7 @@ class EditLine2Model(torch.nn.Module):
 
         self.netM, self.netG, self.netD = self.initialize_networks(opt)
         self.filter = get_gaussian_kernel(kernel_size=3, sigma=2, channels=3)
-        if self.use_gpu():
-            self.filter = self.filter.cuda()
+        self.filter = self.filter
         if opt.isTrain:
             self.mask_creator = MaskCreator(opt.path_objectshape_list, opt.path_objectshape_base)
         if opt.isTrain and opt.load_pretrained_mask is not None:
@@ -222,17 +221,17 @@ class EditLine2Model(torch.nn.Module):
 
     def preprocess_input(self, data):
         # move to GPU and change data types
-        if self.use_gpu():
-            data['image'] = data['image'].cuda()
-            if 'gt' in data:
-                data['gt'] = data['gt'].cuda()
-            else:
-                data['gt'] = data['image'].cuda()
-            data['mask'] = data['mask'].cuda()
-            if 'edgegt' in data:
-                data['edgegt'] = data['edgegt'].cuda()
-            else:
-                data['edgegt'] = data['mask'].cuda()
+        # if self.use_gpu():
+        data['image'] = data['image']
+        if 'gt' in data:
+            data['gt'] = data['gt']
+        else:
+            data['gt'] = data['image']
+        data['mask'] = data['mask']
+        if 'edgegt' in data:
+            data['edgegt'] = data['edgegt']
+        else:
+            data['edgegt'] = data['mask']
         if self.opt.isTrain:
             random_mask = self.get_external_mask(data['image'])
             if self.use_gpu():

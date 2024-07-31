@@ -212,16 +212,43 @@ def load_network_path(net, save_path):
 
 
 def load_network(net, label, epoch, opt):
+    # Construct the file path for the saved model weights
     save_filename = '%s_net_%s.pth' % (epoch, label)
     save_dir = os.path.join(opt.checkpoints_dir, opt.name)
     save_path = os.path.join(save_dir, save_filename)
-    weights = torch.load(save_path)
+
+    print(f"Loading model from {save_path}...")
+
+    # Check if the file exists
+    if not os.path.exists(save_path):
+        raise FileNotFoundError(f"Model file not found at {save_path}")
+
+    try:
+        # Load the weights
+        weights = torch.load(save_path, map_location=torch.device('cpu'))
+    except RuntimeError as e:
+        # Log detailed error message
+        print(f"Error loading the model: {e}")
+        print("Please ensure that the PyTorch version is compatible with the model file format.")
+        return None
+
+    # Prepare a new dictionary to handle potential 'module.' prefix in keys
     new_dict = {}
-    for k,v in weights.items():
+    for k, v in weights.items():
         if k.startswith("module."):
-            k=k.replace("module.","")
+            k = k.replace("module.", "")
         new_dict[k] = v
-    net.load_state_dict(new_dict)
+
+    try:
+        # Load the state dictionary into the model
+        net.load_state_dict(new_dict)
+    except RuntimeError as e:
+        # Log detailed error message
+        print(f"Error loading state dictionary: {e}")
+        print("The structure of the loaded weights may not match the model architecture.")
+        return None
+
+    print("Model loaded successfully.")
     return net
 
 
