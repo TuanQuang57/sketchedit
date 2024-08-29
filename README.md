@@ -4,6 +4,14 @@
 
 ![img]("https://i.ibb.co/VW5x7Fb/image-gif.gif")
 
+# Xử lý ảnh và thị giác máy tính - CS2203.CH181
+
+|    Thành viên   |    MSSV       |
+|-----------------|---------------|
+|Nguyễn Kiều Vinh     |   230101030    |
+|Nguyễn Tuấn Quang    |   230101017    |
+|Lăng Huỳnh Đăng Khoa |   230101051   |
+
 ## Update
 
 Star this project to get notified.
